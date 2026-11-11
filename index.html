@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es-PE">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0E2C52" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="ANC-MP UE012" />
+  <meta name="description" content="PWA de Gestión de Viáticos, Caja Chica y Fondos por Encargo - Autoridad Nacional de Control del Ministerio Público (UE 012)" />
+  <title>ANC-MP | Gestión de Viáticos, Caja Chica y Encargos (UE 012)</title>
+
+  <!-- Manifiesto e Íconos Instalables PWA con el Escudo Oficial de la ANC-MP -->
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/png" href="./icon-192.png" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
+
+  <!-- Hoja de Estilos con la Gama Cromática Oficial ANC-MP -->
+  <link rel="stylesheet" href="./styles.css" />
+
+  <!-- Librerías CDN Gratuitas: Supabase Client + Generador PDF -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+  <!-- =====================================================================
+       CABECERA SUPERIOR CON EL LOGO OFICIAL DE LA ANC-MP
+       ===================================================================== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-brand-group">
+        <div class="header-logo-badge">
+          <img src="./logo-anc.png" alt="Logo Oficial ANC - Ministerio Público" class="header-logo" />
+        </div>
+        <div class="header-titles">
+          <h1 id="header-view-title" class="header-view-title">Inicio</h1>
+          <p id="header-subtitle" class="header-subtitle">
+            Noviembre 2026 • Usuario: Ruperto Castillo (Unidad de Abastecimiento) • Saldo Caja Chica: S/ 24,815.00
+          </p>
+        </div>
+      </div>
+
+      <div class="header-QuickActions">
+        <button type="button" class="btn-header-square btn-light" id="btn-top-home" title="Ir a Inicio">
+          🏠
+        </button>
+        <button type="button" class="btn-header-square" id="btn-top-caja" title="Registrar Gasto Caja Chica">
+          🧾
+        </button>
+        <button type="button" class="btn-header-square btn-whatsapp" id="btn-top-share" title="Compartir por WhatsApp">
+          📲
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =====================================================================
+       PESTAÑA FLOTANTE LATERAL "> MENÚ" Y DRAWER AZUL MARINO ANC (#0E2C52)
+       ===================================================================== -->
+  <button type="button" id="floating-menu-btn" class="floating-menu-tab" aria-label="Abrir Menú">
+    <span id="floating-menu-arrow" class="tab-arrow">❯</span>
+    <span class="tab-label">MENÚ</span>
+  </button>
+
+  <div id="drawer-backdrop" class="drawer-backdrop"></div>
+
+  <aside id="app-drawer" class="app-drawer" aria-label="Menú Principal ANC-MP">
+    <div class="drawer-top-bar">
+      <div class="drawer-brand">
+        <img src="./logo-anc.png" alt="ANC-MP" class="drawer-brand-logo" />
+        <div class="drawer-brand-text">
+          UE 012: ANC-MP<br />
+          <span style="font-size: 0.74rem; color: #E2E8F0; font-weight: 600;">Gestión Administrativa</span>
+        </div>
+      </div>
+      <button type="button" id="drawer-close-btn" class="drawer-close-btn" aria-label="Cerrar Menú">✕</button>
+    </div>
+
+    <!-- SECCIÓN 1: MÓDULOS OPERATIVOS -->
+    <div class="drawer-section expanded" data-accordion="sec-1">
+      <button type="button" class="drawer-section-header">
+        <span>1. MÓDULOS OPERATIVOS</span>
+        <span class="acc-arrow">▼</span>
+      </button>
+      <div class="drawer-section-body">
+        <button type="button" class="drawer-nav-item active" data-target="vista-inicio">
+          <span>🏠</span> <span>Inicio (Pantalla Principal)</span>
+        </button>
+        <button type="button" class="drawer-nav-item" data-target="vista-viaticos">
+          <span>✈️</span> <span>Calcular y Solicitar Viáticos</span>
+        </button>
+        <button type="button" class="drawer-nav-item" data-target="vista-caja-chica">
+          <span>🧾</span> <span>Registrar Gasto Caja Chica</span>
+        </button>
+        <button type="button" class="drawer-nav-item" data-target="vista-evaluador">
+          <span>🚦</span> <span>Evaluador Caja Chica y Encargos</span>
+        </button>
+        <button type="button" class="drawer-nav-item" data-target="vista-admin">
+          <span>📊</span> <span>Panel Administrador y Reportes</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 2: CONFIGURACIÓN ANUAL Y PARÁMETROS -->
+    <div class="drawer-section" data-accordion="sec-2">
+      <button type="button" class="drawer-section-header">
+        <span>2. CONFIGURACIÓN Y PARÁMETROS</span>
+        <span class="acc-arrow">▶</span>
+      </button>
+      <div class="drawer-section-body">
+        <button type="button" class="drawer-nav-item" data-target="vista-configuracion">
+          <span>⚙️</span> <span>UIT Vigente, T.C. y Presupuesto</span>
+        </button>
+        <button type="button" class="drawer-nav-item" data-target="vista-tarifario">
+          <span>🚕</span> <span>Tarifario Movilidad (Anexo 09)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 3: USUARIOS, UNIDADES ORGÁNICAS Y ADC -->
+    <div class="drawer-section" data-accordion="sec-3">
+      <button type="button" class="drawer-section-header">
+        <span>3. UNIDADES ORGÁNICAS Y ADC</span>
+        <span class="acc-arrow">▶</span>
+      </button>
+      <div class="drawer-section-body">
+        <button type="button" class="drawer-nav-item" data-target="vista-configuracion">
+          <span>🏛️</span> <span>Cambiar Unidad / ADC o Rol</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 4: INSTALAR Y COMPARTIR APP -->
+    <div class="drawer-section expanded highlight-border" data-accordion="sec-4">
+      <button type="button" class="drawer-section-header">
+        <span>4. INSTALAR Y COMPARTIR APP</span>
+        <span class="acc-arrow">▼</span>
+      </button>
+      <div class="drawer-section-body">
+        <p style="font-size: 0.82rem; color: #CBD5E1; margin-bottom: 6px; font-weight: 600;">
+          Instalar o enviar a otro equipo de la ANC-MP:
+        </p>
+        <button type="button" id="btn-instalar-pwa" class="btn-drawer-install">
+          <span>📲</span> <span>Instalar en este Equipo</span>
+        </button>
+        <button type="button" id="btn-compartir-pwa" class="btn-drawer-whatsapp">
+          <span>🟢</span> <span>Compartir Instalador por WhatsApp</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- =====================================================================
+       CUERPO PRINCIPAL MULTIVISTA
+       ===================================================================== -->
+  <main class="app-main-container">
+
+    <!-- VISTA 1: PANTALLA PRINCIPAL DE INICIO -->
+    <section id="vista-inicio" class="app-view active-view">
+      <div class="home-hero-box">
+        <h2 class="home-hero-question">¿Qué deseas gestionar hoy en la <span>ANC-MP</span>?</h2>
+        <p class="home-hero-sub">Toca una de las 4 opciones principales para empezar</p>
+      </div>
+
+      <div class="home-cards-grid">
+        <!-- Tarjeta A: Viáticos -->
+        <article class="home-action-card card-amber" data-goto="vista-viaticos">
+          <div class="home-card-icon-box">✈️</div>
+          <h3 class="home-card-title">Calcular y Solicitar Viáticos</h3>
+          <p class="home-card-desc">Comisiones nacionales, internas de ADC, sin viáticos e internacionales (Directiva V.10)</p>
+        </article>
+
+        <!-- Tarjeta B: Caja Chica -->
+        <article class="home-action-card card-emerald" data-goto="vista-caja-chica">
+          <div class="home-card-icon-box">🧾</div>
+          <h3 class="home-card-title">Registrar Gasto / Pedido de Caja Chica</h3>
+          <p class="home-card-desc">Ejecución por Unidad Orgánica / ADC, calculadora rápida y vales provisionales</p>
+        </article>
+
+        <!-- Tarjeta C: Evaluador Normativo -->
+        <article class="home-action-card card-blue" data-goto="vista-evaluador">
+          <div class="home-card-icon-box">🔍</div>
+          <h3 class="home-card-title">Evaluador de Caja Chica y Encargos</h3>
+          <p class="home-card-desc">Consulta de bienes/servicios permitidos, prohibiciones, retenciones y topes en UIT</p>
+        </article>
+
+        <!-- Tarjeta D: Panel Administrador -->
+        <article class="home-action-card card-navy" data-goto="vista-admin">
+          <div class="home-card-icon-box">📊</div>
+          <h3 class="home-card-title">Panel Administrador y Reportes</h3>
+          <p class="home-card-desc">Consolidado nacional Sede Central y 34 ADC, auditoría y exportación PDF / Excel</p>
+        </article>
+      </div>
+
+      <!-- Pie Institucional Bicolor con el Escudo Dorado Real (Inspirado en la lámina oficial #ConoceLaANCMP) -->
+      <footer class="anc-institutional-footer">
+        <div class="anc-footer-left">
+          <img src="./escudo-anc.png" alt="Escudo ANC-MP" />
+          <div>
+            Autoridad Nacional de Control<br />
+            <span style="color: #EDBE02; font-size: 0.78rem;">MINISTERIO PÚBLICO • UE 012</span>
+          </div>
+        </div>
+        <div class="anc-footer-right">
+          Control funcional y gestión administrativa transparente en la Sede Central y las 34 Autoridades Desconcentradas de Control a nivel nacional.
+        </div>
+      </footer>
+    </section>
+
+    <!-- Contenedores para las vistas operativas que se inyectan en Etapas 3, 4, 5 y 6 -->
+    <section id="vista-viaticos" class="app-view"></section>
+    <section id="vista-caja-chica" class="app-view"></section>
+    <section id="vista-evaluador" class="app-view"></section>
+    <section id="vista-configuracion" class="app-view"></section>
+    <section id="vista-tarifario" class="app-view"></section>
+    <section id="vista-admin" class="app-view"></section>
+
+  </main>
+
+  <!-- Contenedor de Modales y Notificaciones Toast -->
+  <div id="modal-container"></div>
+  <div id="toast-container"></div>
+
+  <!-- Scripts de Configuración Base (Supabase) y Módulos por Etapa -->
+  <script src="./supabase-config.js"></script>
+  <script src="./app-etapa3.js" defer></script>
+  <script src="./app-etapa4.js" defer></script>
+  <script src="./app-etapa5.js" defer></script>
+  <script src="./app-etapa6.js" defer></script>
+</body>
+</html>
